@@ -40,10 +40,8 @@ const ViewPost = () => {
 
   return (
     <>
-      <Navbar />
-
-      <div className="max-w-4xl mx-auto p-4">
-        <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="max-w-4xl mx-auto px-4 py-10">
+        <div className="bg-white shadow-md rounded-2xl p-6 md:p-8">
           <h1 className="text-4xl font-bold mb-4">
             {post.title}
           </h1>

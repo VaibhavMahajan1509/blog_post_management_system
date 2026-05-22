@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { HiOutlineDocumentAdd } from "react-icons/hi";
 import toast from "react-hot-toast";
 
 import API from "../services/api";
@@ -22,7 +23,6 @@ const AddEditPost = () => {
     formState: { errors },
     reset,
   } = useForm();
-
 
   // load post when editing
   const fetchSinglePost = async () => {
@@ -51,7 +51,6 @@ const AddEditPost = () => {
     }
   }, [id]);
 
-
   // submit handler (create / update)
   const onSubmit = async (formData) => {
     try {
@@ -75,16 +74,30 @@ const AddEditPost = () => {
 
   return (
     <>
-      <Navbar />
+      
 
       <div className="max-w-5xl mx-auto p-4">
-        <h2 className="text-3xl font-bold mb-2">
-          {isEdit ? "Edit Post" : "Add New Post"}
-        </h2>
 
-        <p className="text-gray-500 mb-8">
-          Manage and organize your blog content professionally.
-        </p>
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6 text-center">
+
+          <div className="flex justify-center mb-3">
+            <div className="bg-blue-100 p-3 rounded-full">
+              <HiOutlineDocumentAdd
+                size={32}
+                className="text-blue-700"
+              />
+            </div>
+          </div>
+
+          <h2 className="text-2xl font-bold text-blue-700 mb-2">
+            {isEdit ? "Edit Post" : "Create New Post"}
+          </h2>
+
+          <p className="text-gray-700 text-sm">
+            Fill in the details below to{" "}
+            {isEdit ? "update the post" : "publish a new post"}.
+          </p>
+        </div>
 
         <PostForm
           register={register}
