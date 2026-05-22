@@ -1,286 +1,65 @@
-import Post from "../models/Post.js";
-import { Parser } from "json2csv";
+# Blog Post Management System (MERN Stack)
 
-// CREATE POST
-export const createPost = async (req, res) => {
-  try {
-    const {
-      title,
-      author,
-      email,
-      category,
-      tags,
-      status,
-      thumbnail,
-      shortDescription,
-      content,
-    } = req.body;
+A full-stack MERN Blog Post Management System with CRUD operations, search, filtering, pagination, and CSV export functionality.
 
-    const post = await Post.create({
-      title,
-      author,
-      email,
-      category,
-      tags,
-      status,
-      thumbnail,
-      shortDescription,
-      content,
-    });
+---
 
-    res.status(201).json({
-      success: true,
-      message: "Post created successfully",
-      post,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+## Features
 
+### User Features
+- Create blog posts
+- Edit blog posts
+- Delete blog posts
+- View all blog posts in table format
+- View single blog post
+- Search posts by title, author, category
+- Filter posts by category and status
+- Pagination support
+- Export posts data as CSV
 
-// GET ALL POSTS WITH SEARCH + PAGINATION
-export const getPosts = async (req, res) => {
-  try {
-    const page = Number(req.query.page) || 1;
+---
 
-    const limit = Number(req.query.limit) || 5;
+## Tech Stack
 
-    const search = req.query.search || "";
+### Frontend
+- React.js
+- React Router DOM
+- Axios
+- React Hook Form
+- Tailwind CSS
+- React Hot Toast
 
-    const query = {
-      $or: [
-        {
-          title: {
-            $regex: search,
-            $options: "i",
-          },
-        },
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- json2csv
+- CORS
+- dotenv
 
-        {
-          author: {
-            $regex: search,
-            $options: "i",
-          },
-        },
+---
 
-        {
-          category: {
-            $regex: search,
-            $options: "i",
-          },
-        },
-      ],
-    };
+## Folder Structure
 
-    const totalPosts =
-      await Post.countDocuments(query);
-
-    const posts = await Post.find(query)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit);
-
-    res.status(200).json({
-      success: true,
-      currentPage: page,
-      totalPages: Math.ceil(
-        totalPosts / limit
-      ),
-      totalPosts,
-      posts,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-
-// GET SINGLE POST
-export const getSinglePost = async (
-  req,
-  res
-) => {
-  try {
-    const post = await Post.findById(
-      req.params.id
-    );
-
-    if (!post) {
-      return res.status(404).json({
-        success: false,
-        message: "Post not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      post,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-
-// UPDATE POST
-export const updatePost = async (
-  req,
-  res
-) => {
-  try {
-    const updatedPost =
-      await Post.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
-
-    if (!updatedPost) {
-      return res.status(404).json({
-        success: false,
-        message: "Post not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message:
-        "Post updated successfully",
-      updatedPost,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-
-// DELETE POST
-export const deletePost = async (
-  req,
-  res
-) => {
-  try {
-    const deletedPost =
-      await Post.findByIdAndDelete(
-        req.params.id
-      );
-
-    if (!deletedPost) {
-      return res.status(404).json({
-        success: false,
-        message: "Post not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message:
-        "Post deleted successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-
-// EXPORT POSTS TO CSV
-export const exportPostsToCSV = async (
-  req,
-  res
-) => {
-  try {
-    const search =
-      req.query.search || "";
-
-    const query = {
-      $or: [
-        {
-          title: {
-            $regex: search,
-            $options: "i",
-          },
-        },
-
-        {
-          author: {
-            $regex: search,
-            $options: "i",
-          },
-        },
-
-        {
-          category: {
-            $regex: search,
-            $options: "i",
-          },
-        },
-      ],
-    };
-
-    const posts = await Post.find(
-      query
-    ).select(
-      `
-      title
-      author
-      email
-      category
-      tags
-      status
-      shortDescription
-      createdAt
-    `
-    );
-
-    const fields = [
-      "title",
-      "author",
-      "email",
-      "category",
-      "tags",
-      "status",
-      "shortDescription",
-      "createdAt",
-    ];
-
-    const json2csvParser = new Parser({
-      fields,
-    });
-
-    const csv =
-      json2csvParser.parse(posts);
-
-    res.header(
-      "Content-Type",
-      "text/csv"
-    );
-
-    res.attachment("posts.csv");
-
-    return res.send(csv);
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+```bash
+blog_post_management_system
+│
+├── backend
+│   ├── src
+│   │   ├── config
+│   │   ├── controllers
+│   │   ├── models
+│   │   ├── routes
+│   │   └── app.js
+│   ├── server.js
+│
+├── frontend
+│   ├── src
+│   │   ├── components
+│   │   ├── pages
+│   │   ├── services
+│   │   └── App.js
+│
+├── .gitignore
+└── README.md
