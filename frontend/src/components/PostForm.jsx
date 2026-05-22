@@ -11,7 +11,8 @@ const PostForm = ({
       onSubmit={handleSubmit(onSubmit)}
       className="bg-white shadow-md rounded-2xl p-6 md:p-8"
     >
-
+      
+      
       {/* basic info */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-5 border-b pb-3">
